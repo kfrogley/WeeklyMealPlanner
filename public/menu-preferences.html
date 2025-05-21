@@ -23,13 +23,43 @@
   </select>
 
   <label for="menu-preference">Menu Preference:</label>
-  <input type="text" id="menu-preference" name="menu-preference" placeholder="e.g., Vegetarian, Vegan, Gluten-Free" required>
+  <select id="menu-preference" name="menu-preference" required>
+    <option value="">--Please choose an option--</option>
+    <option value="African">African</option>
+    <option value="Asian">Asian</option>
+    <option value="American">American</option>
+    <option value="British">British</option>
+    <option value="Cajun">Cajun</option>
+    <option value="Caribbean">Caribbean</option>
+    <option value="Chinese">Chinese</option>
+    <option value="Eastern European">Eastern European</option>
+    <option value="European">European</option>
+    <option value="French">French</option>
+    <option value="German">German</option>
+    <option value="Greek">Greek</option>
+    <option value="Indian">Indian</option>
+    <option value="Irish">Irish</option>
+    <option value="Italian">Italian</option>
+    <option value="Japanese">Japanese</option>
+    <option value="Jewish">Jewish</option>
+    <option value="Korean">Korean</option>
+    <option value="Latin American">Latin American</option>
+    <option value="Mediterranean">Mediterranean</option>
+    <option value="Mexican">Mexican</option>
+    <option value="Middle Eastern">Middle Eastern</option>
+    <option value="Nordic">Nordic</option>
+    <option value="Southern">Southern</option>
+    <option value="Spanish">Spanish</option>
+    <option value="Thai">Thai</option>
+    <option value="Vietnamese">Vietnamese</option>
+  </select>
 
   <label for="additional-notes">Additional Notes:</label>
   <textarea id="additional-notes" name="additional-notes" rows="3" placeholder="Any allergies or special requests?"></textarea>
 
   <button type="submit">Submit</button>
 </form>
+
 <script>
   document.querySelector('form').addEventListener('submit', function(event) {
     const ageGroup = document.getElementById('age-group').value;
@@ -38,8 +68,8 @@
     if (!ageGroup) {
       alert('Please select an age group.');
       event.preventDefault();
-    } else if (!menuPreference.trim()) {
-      alert('Please enter a menu preference.');
+    } else if (!menuPreference) {
+      alert('Please select a menu preference.');
       event.preventDefault();
     }
   });
