@@ -4,157 +4,297 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pantry Items Input</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="modal.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="icon" type="image/png" href="img/FavIcon.png" />
   </head>
-  <body>
-    <h1>Enter Pantry Item</h1>
-    <form action="/pantry" method="POST">
-      <label for="item-input">Pantry Item:</label>
-      <input
-        type="text"
-        id="item-input"
-        name="item"
-        required
-        placeholder="e.g. Rice"
-      />
-      <button type="submit">Add Item</button>
-    </form>
-    <h2>Current Pantry Items</h2>
-    <table id="pantry-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Update</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div id="modal">
-      <div class="modal-content">
-        <h3>Update Pantry Item</h3>
-        <label for="modal-input">New Pantry Item Name:</label>
-        <input type="text" id="modal-input" placeholder="Enter new name" />
-        <div class="modal-actions">
-          <button id="modal-cancel">Cancel</button>
-          <button id="modal-save">Save</button>
+  <body class="bg-light">
+    <div class="container py-4">
+      <h1 class="mb-4 text-primary">Enter Pantry Item</h1>
+      <form
+        action="/pantry"
+        method="POST"
+        class="row g-3 align-items-center mb-4"
+      >
+        <div class="col-auto">
+          <label for="item-input" class="col-form-label">Pantry Item:</label>
+        </div>
+        <div class="col-auto">
+          <input
+            type="text"
+            id="item-input"
+            name="item"
+            required
+            placeholder="e.g. Rice"
+            class="form-control"
+          />
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-success">Add Item</button>
+        </div>
+      </form>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Current Pantry Items</h2>
+        <div class="input-group" style="max-width: 250px">
+          <span class="input-group-text bg-white border-end-0"
+            ><i class="bi bi-search"></i
+          ></span>
+          <input
+            type="text"
+            id="filter-input"
+            placeholder="Filter items..."
+            class="form-control border-start-0"
+            aria-label="Filter items"
+          />
         </div>
       </div>
-    </div>
-    <div id="delete-modal">
-      <div class="modal-content">
-        <h3>Delete Pantry Item</h3>
-        <p id="delete-modal-message"></p>
-        <div class="modal-actions">
-          <button id="delete-modal-cancel">Cancel</button>
-          <button id="delete-modal-confirm">Delete</button>
+      <div class="table-responsive">
+        <table
+          id="pantry-table"
+          class="table table-striped table-bordered align-middle bg-white"
+        >
+          <thead class="table-light">
+            <tr>
+              <th class="position-relative" style="width: 180px">
+                Name
+                <span
+                  class="sort-arrows d-inline-flex flex-column position-absolute top-50 end-0 translate-middle-y me-2"
+                >
+                  <span id="sort-up" class="sort-arrow">&#9650;</span>
+                  <span id="sort-down" class="sort-arrow">&#9660;</span>
+                </span>
+              </th>
+              <th>Update</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="modal" class="modal fade show" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content p-4">
+            <h3 class="modal-title mb-3">Update Pantry Item</h3>
+            <label for="modal-input" class="form-label"
+              >New Pantry Item Name:</label
+            >
+            <input
+              type="text"
+              id="modal-input"
+              placeholder="Enter new name"
+              class="form-control mb-3"
+            />
+            <div class="modal-actions d-flex justify-content-end gap-2">
+              <button id="modal-cancel" class="btn btn-secondary">
+                Cancel
+              </button>
+              <button id="modal-save" class="btn btn-primary">Save</button>
+            </div>
+          </div>
         </div>
       </div>
+      <div id="delete-modal" class="modal fade show" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content p-4">
+            <h3 class="modal-title mb-3">Delete Pantry Item</h3>
+            <p id="delete-modal-message"></p>
+            <div class="modal-actions d-flex justify-content-end gap-2">
+              <button id="delete-modal-cancel" class="btn btn-secondary">
+                Cancel
+              </button>
+              <button id="delete-modal-confirm" class="btn btn-danger">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        let modalItem = null;
+        function showModal(currentValue, onSave) {
+          const modal = document.getElementById("modal");
+          const input = document.getElementById("modal-input");
+          modal.classList.add("active");
+          input.value = currentValue;
+          input.focus();
+          function cleanup() {
+            modal.classList.remove("active");
+            document.getElementById("modal-save").onclick = null;
+            document.getElementById("modal-cancel").onclick = null;
+            modal.onclick = null;
+          }
+          document.getElementById("modal-save").onclick = function () {
+            const newName = input.value.trim();
+            if (newName && newName !== currentValue) {
+              onSave(newName);
+            }
+            cleanup();
+          };
+          document.getElementById("modal-cancel").onclick = function () {
+            cleanup();
+          };
+          // Close modal when clicking outside modal-content
+          modal.onclick = function (e) {
+            if (e.target === modal) {
+              cleanup();
+            }
+          };
+        }
+        function showDeleteModal(item, onDelete) {
+          const modal = document.getElementById("delete-modal");
+          const msg = document.getElementById("delete-modal-message");
+          msg.textContent = `Are you sure you want to delete '${item}'?`;
+          modal.classList.add("active");
+          function cleanup() {
+            modal.classList.remove("active");
+            document.getElementById("delete-modal-cancel").onclick = null;
+            document.getElementById("delete-modal-confirm").onclick = null;
+            modal.onclick = null;
+          }
+          document.getElementById("delete-modal-cancel").onclick = function () {
+            cleanup();
+          };
+          document.getElementById("delete-modal-confirm").onclick =
+            function () {
+              onDelete();
+              cleanup();
+            };
+          // Close modal when clicking outside modal-content
+          modal.onclick = function (e) {
+            if (e.target === modal) {
+              cleanup();
+            }
+          };
+        }
+        let currentItems = [];
+        let currentSort = null; // 'asc', 'desc', or null
+        let currentFilter = "";
+        function updateSortArrows() {
+          const up = document.getElementById("sort-up");
+          const down = document.getElementById("sort-down");
+          if (currentSort === "asc") {
+            up.style.display = "block";
+            down.style.display = "none";
+            up.title = "Currently sorted A-Z. Click to sort Z-A.";
+            down.title = "";
+          } else if (currentSort === "desc") {
+            up.style.display = "none";
+            down.style.display = "block";
+            down.title = "Currently sorted Z-A. Click to sort A-Z.";
+            up.title = "";
+          } else {
+            up.style.display = "block";
+            down.style.display = "block";
+            up.title = "Sort A-Z";
+            down.title = "Sort Z-A";
+          }
+        }
+        function renderTable(items) {
+          currentItems = items;
+          let filtered = items;
+          if (currentFilter) {
+            filtered = filtered.filter((item) =>
+              item.toLowerCase().includes(currentFilter.toLowerCase())
+            );
+          }
+          if (currentSort === "asc") {
+            filtered = [...filtered].sort((a, b) => a.localeCompare(b));
+          } else if (currentSort === "desc") {
+            filtered = [...filtered].sort((a, b) => b.localeCompare(a));
+          }
+          const tbody = document.querySelector("#pantry-table tbody");
+          tbody.innerHTML = "";
+          filtered.forEach((item, idx) => {
+            const tr = document.createElement("tr");
+            // Name cell
+            const nameTd = document.createElement("td");
+            nameTd.textContent = item;
+            tr.appendChild(nameTd);
+            // Update button
+            const updateTd = document.createElement("td");
+            const updateBtn = document.createElement("button");
+            updateBtn.textContent = "Update";
+            updateBtn.className = "btn btn-warning btn-sm";
+            updateBtn.onclick = function () {
+              showModal(item, function (newName) {
+                fetch(`/pantry/${encodeURIComponent(item)}`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ newName }),
+                })
+                  .then((res) => res.json())
+                  .then((data) => renderTable(data));
+              });
+            };
+            updateTd.appendChild(updateBtn);
+            tr.appendChild(updateTd);
+            // Delete button
+            const deleteTd = document.createElement("td");
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "btn btn-danger btn-sm";
+            deleteBtn.onclick = function () {
+              showDeleteModal(item, function () {
+                fetch(`/pantry/${encodeURIComponent(item)}`, {
+                  method: "DELETE",
+                })
+                  .then((res) => res.json())
+                  .then((data) => renderTable(data));
+              });
+            };
+            deleteTd.appendChild(deleteBtn);
+            tr.appendChild(deleteTd);
+            tbody.appendChild(tr);
+          });
+          updateSortArrows();
+        }
+        function fetchAndRender() {
+          fetch("/pantry")
+            .then((res) => res.json())
+            .then((data) => {
+              currentItems = data;
+              renderTable(data);
+            });
+        }
+        document
+          .getElementById("filter-input")
+          .addEventListener("input", function (e) {
+            currentFilter = e.target.value;
+            renderTable(currentItems);
+          });
+        // Remove sort button event listeners and add to header arrows
+        document
+          .getElementById("sort-up")
+          .addEventListener("click", function () {
+            if (currentSort === "asc") {
+              currentSort = "desc";
+            } else {
+              currentSort = "asc";
+            }
+            renderTable(currentItems);
+            updateSortArrows();
+          });
+        document
+          .getElementById("sort-down")
+          .addEventListener("click", function () {
+            if (currentSort === "desc") {
+              currentSort = "asc";
+            } else {
+              currentSort = "desc";
+            }
+            renderTable(currentItems);
+            updateSortArrows();
+          });
+        fetchAndRender();
+        updateSortArrows();
+      </script>
     </div>
-    <script>
-      let modalItem = null;
-      function showModal(currentValue, onSave) {
-        const modal = document.getElementById("modal");
-        const input = document.getElementById("modal-input");
-        modal.classList.add("active");
-        input.value = currentValue;
-        input.focus();
-        function cleanup() {
-          modal.classList.remove("active");
-          document.getElementById("modal-save").onclick = null;
-          document.getElementById("modal-cancel").onclick = null;
-          modal.onclick = null;
-        }
-        document.getElementById("modal-save").onclick = function () {
-          const newName = input.value.trim();
-          if (newName && newName !== currentValue) {
-            onSave(newName);
-          }
-          cleanup();
-        };
-        document.getElementById("modal-cancel").onclick = function () {
-          cleanup();
-        };
-        // Close modal when clicking outside modal-content
-        modal.onclick = function (e) {
-          if (e.target === modal) {
-            cleanup();
-          }
-        };
-      }
-      function showDeleteModal(item, onDelete) {
-        const modal = document.getElementById("delete-modal");
-        const msg = document.getElementById("delete-modal-message");
-        msg.textContent = `Are you sure you want to delete '${item}'?`;
-        modal.classList.add("active");
-        function cleanup() {
-          modal.classList.remove("active");
-          document.getElementById("delete-modal-cancel").onclick = null;
-          document.getElementById("delete-modal-confirm").onclick = null;
-          modal.onclick = null;
-        }
-        document.getElementById("delete-modal-cancel").onclick = function () {
-          cleanup();
-        };
-        document.getElementById("delete-modal-confirm").onclick = function () {
-          onDelete();
-          cleanup();
-        };
-        // Close modal when clicking outside modal-content
-        modal.onclick = function (e) {
-          if (e.target === modal) {
-            cleanup();
-          }
-        };
-      }
-      function renderTable(items) {
-        const tbody = document.querySelector("#pantry-table tbody");
-        tbody.innerHTML = "";
-        items.forEach((item, idx) => {
-          const tr = document.createElement("tr");
-          // Name cell
-          const nameTd = document.createElement("td");
-          nameTd.textContent = item;
-          tr.appendChild(nameTd);
-          // Update button
-          const updateTd = document.createElement("td");
-          const updateBtn = document.createElement("button");
-          updateBtn.textContent = "Update";
-          updateBtn.onclick = function () {
-            showModal(item, function (newName) {
-              fetch(`/pantry/${encodeURIComponent(item)}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ newName }),
-              })
-                .then((res) => res.json())
-                .then((data) => renderTable(data));
-            });
-          };
-          updateTd.appendChild(updateBtn);
-          tr.appendChild(updateTd);
-          // Delete button
-          const deleteTd = document.createElement("td");
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "Delete";
-          deleteBtn.onclick = function () {
-            showDeleteModal(item, function () {
-              fetch(`/pantry/${encodeURIComponent(item)}`, { method: "DELETE" })
-                .then((res) => res.json())
-                .then((data) => renderTable(data));
-            });
-          };
-          deleteTd.appendChild(deleteBtn);
-          tr.appendChild(deleteTd);
-          tbody.appendChild(tr);
-       });
-      }
-      function fetchAndRender() {
-        fetch("/pantry")
-          .then((res) => res.json())
-          .then(renderTable);
-      }
-      fetchAndRender();
-    </script>
   </body>
 </html>
