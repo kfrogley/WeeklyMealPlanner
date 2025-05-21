@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Upload & Recognize Images</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f9f9f9;
+    }
+    .upload-container {
+      max-width: 500px;
+      padding: 1.5rem;
+      margin: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    button {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #007acc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .log {
+      margin-top: 1rem;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #f1f1f1;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .log p {
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-container">
+    <h1>Upload & Recognize Images</h1>
+    <input type="file" id="file-input" multiple accept="image/*">
+    <button id="upload-btn">Analyze Selected Images</button>
+    <div class="log" id="log"></div>
+  </div>
+
+  <!-- Axios for browser -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const inputEl   = document.getElementById('file-input');
+    const uploadBtn = document.getElementById('upload-btn');
+    const logEl     = document.getElementById('log');
+
+    function log(message, isError = false) {
+      const p = document.createElement('p');
+      p.textContent = message;
+      p.style.color = isError ? 'red' : 'green';
+      logEl.appendChild(p);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    /**
+     * Send image file directly to the recognition API.
+     * Expects JSON response with a `labels` array.
+     */
+    async function recognizeFile(file) {
+      const form = new FormData();
+      form.append('image', file, file.name);
+
+      try {
+        const res = await axios.post('/recognize', form, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        const labels = res.data.labels || [];
+        log(`✓ ${file.name} recognized: ${labels.join(', ') || 'no labels'}`);
+      } catch (err) {
+        log(`✗ ${file.name} error: ${err.message}`, true);
+      }
+    }
+
+    uploadBtn.addEventListener('click', async () => {
+      const files = Array.from(inputEl.files);
+      if (!files.length) {
+        alert('Please select at least one image.');
+        return;
+      }
+      uploadBtn.disabled = true;
+      logEl.innerHTML = '';
+      for (const file of files) {
+        await recognizeFile(file);
+      }
+      uploadBtn.disabled = false;
+    });
+  </script>
+</body>
+</html>

@@ -1,3 +1,7 @@
+import { recognizeImageFromUrl } from "./recognizeImageUrl.js";
+import bodyParser from "body-parser";
+import cors from "cors";
+
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -18,6 +22,8 @@ if (fs.existsSync(pantryFilePath)) {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.static(path.join(__dirname, "public")));
+app.use(cors());
+app.use(bodyParser.json());
 
 // Route to serve index.html explicitly
 app.get("/", (req, res) => {
@@ -73,4 +79,17 @@ app.delete("/pantry/:item", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
+});
+
+app.post("/api/recognize-image-url", async (req, res) => {
+  const { imageUrl } = req.body;
+  if (!imageUrl) {
+    return res.status(400).json({ error: "Missing imageUrl" });
+  }
+  try {
+    const text = await recognizeImageFromUrl(imageUrl);
+    res.json({ text });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
