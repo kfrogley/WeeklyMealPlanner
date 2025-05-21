@@ -14,7 +14,7 @@ async function recognizeImageFromUrl(imageUrl) {
         {
           role: "user",
           content: [
-            { type: "text", text: "Give me a list of contents from this image separated by new line." },
+            { type: "text", text: "Give me a list of contents from this image separated by line feed. Using only alpha nemeric characters" },
             { type: "image_url", image_url: { url: imageUrl } }
           ]
         }
