@@ -156,6 +156,22 @@
           </div>
         </div>
       </div>
+      <div id="similar-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content p-4">
+            <h3 class="modal-title mb-3">Similar Item Detected</h3>
+            <div id="similar-message" class="mb-3"></div>
+            <div class="modal-actions d-flex justify-content-end gap-2">
+              <button id="similar-continue" class="btn btn-success">
+                Continue
+              </button>
+              <button id="similar-cancel" class="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <script>
         let modalItem = null;
         function showModal(currentValue, onSave) {
@@ -204,6 +220,9 @@
           document.getElementById("delete-modal-confirm").onclick =
             function () {
               onDelete();
+              // Remove deleted item from pantryItemsList
+              const deleted = item.toLowerCase();
+              pantryItemsList = pantryItemsList.filter((i) => i !== deleted);
               cleanup();
             };
           // Close modal when clicking outside modal-content
@@ -334,6 +353,102 @@
           });
         fetchAndRender();
         updateSortArrows();
+        // Pantry items for validation (should be kept in sync with backend)
+        let pantryItemsList = [];
+        fetch("/pantry")
+          .then((r) => r.json())
+          .then(
+            (items) => (pantryItemsList = items.map((i) => i.toLowerCase()))
+          );
+
+        // Add item form validation (spell check removed)
+        document.querySelector("form").addEventListener("submit", function (e) {
+          const input = document.getElementById("item-input");
+          const value = input.value.trim();
+          if (!value) return;
+          e.preventDefault();
+          // Only similar item check
+          checkSimilar(value);
+        });
+
+        function checkSimilar(value) {
+          // Gather all similar items
+          const similars = pantryItemsList.filter((item) => {
+            if (item === value.toLowerCase()) return false;
+            const dist = getLevenshtein(value.toLowerCase(), item);
+            return (
+              dist <= 2 ||
+              item.includes(value.toLowerCase()) ||
+              value.toLowerCase().includes(item)
+            );
+          });
+          if (similars.length > 0) {
+            showSimilarModal(value, similars, () => {
+              // Continue: submit form
+              document.querySelector("form").submit();
+            });
+            return;
+          }
+          // No issues, submit
+          document.querySelector("form").submit();
+        }
+
+        function getLevenshtein(a, b) {
+          const matrix = Array.from({ length: a.length + 1 }, () =>
+            Array(b.length + 1).fill(0)
+          );
+          for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+          for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+          for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+              matrix[i][j] =
+                a[i - 1] === b[j - 1]
+                  ? matrix[i - 1][j - 1]
+                  : 1 +
+                    Math.min(
+                      matrix[i - 1][j],
+                      matrix[i][j - 1],
+                      matrix[i - 1][j - 1]
+                    );
+            }
+          }
+          return matrix[a.length][b.length];
+        }
+
+        // Similar modal logic
+        function showSimilarModal(inputValue, similars, onContinue) {
+          const modal = document.getElementById("similar-modal");
+          let html = `<strong>You entered:</strong> <span class='text-primary'>"${inputValue}"</span><br/>`;
+          html += `<strong>Similar items in your pantry:</strong><ul class='mb-2'>`;
+          for (const s of similars) {
+            html += `<li>"${s}"</li>`;
+          }
+          html += "</ul>Are you sure you want to add this item?";
+          document.getElementById("similar-message").innerHTML = html;
+          document.getElementById("similar-continue").onclick = () => {
+            hideModal(modal);
+            onContinue();
+          };
+          document.getElementById("similar-cancel").onclick = () =>
+            hideModal(modal);
+          showModalEl(modal);
+        }
+
+        // Modal helpers
+        function showModalEl(modal) {
+          modal.classList.add("show");
+          modal.style.display = "block";
+          modal.setAttribute("aria-modal", "true");
+          modal.removeAttribute("aria-hidden");
+          document.body.classList.add("modal-open");
+        }
+        function hideModal(modal) {
+          modal.classList.remove("show");
+          modal.style.display = "none";
+          modal.removeAttribute("aria-modal");
+          modal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+        }
       </script>
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
