@@ -1,16 +1,11 @@
-import "dotenv/config";
-import { OpenAI } from "openai";
+const dotenv = require("dotenv/config");
+const { OpenAI } = require("openai");
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-/**
- * Recognize text from a remote image URL using the Vision API.
- * @param {string} imageUrl
- * @returns {Promise<string>}
- */
-export async function recognizeImageFromUrl(imageUrl) {
+async function recognizeImageFromUrl(imageUrl) {
   try {
     const res = await openai.images.generate({
       model: "vision-1",
@@ -21,3 +16,5 @@ export async function recognizeImageFromUrl(imageUrl) {
     throw new Error(err.message);
   }
 }
+
+module.exports = { recognizeImageFromUrl };

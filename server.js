@@ -1,6 +1,6 @@
-import { recognizeImageFromUrl } from "./recognizeImageUrl.js";
-import bodyParser from "body-parser";
-import cors from "cors";
+const { recognizeImageFromUrl } = require("./recognizeImageUrl.js");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const express = require("express");
 const path = require("path");
