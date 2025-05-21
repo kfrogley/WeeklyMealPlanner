@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pantry Items Input</title>
+</head>
+<body>
+  <h1>Enter Pantry Item</h1>
+  <form action="/pantry" method="POST">
+    <input type="text" name="item" required>
+    <button type="submit">Add Item</button>
+  </form>
+  <h2>Current Pantry Items</h2>
+  <ul id="pantry-list"></ul>
+  <script>
+    fetch('/pantry')
+      .then(res => res.json())
+      .then(items => {
+        const list = document.getElementById('pantry-list');
+        list.innerHTML = '';
+        items.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          list.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
