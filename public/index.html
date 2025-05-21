@@ -13,6 +13,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
+    <link rel="icon" type="image/png" href="img/FavIcon.png" />
   </head>
   <body class="bg-light">
     <div class="container py-4">
@@ -61,10 +62,14 @@
         >
           <thead class="table-light">
             <tr>
-              <th>
+              <th class="position-relative" style="width: 180px">
                 Name
-                <span id="sort-up" class="sort-arrow ms-1">&#9650;</span>
-                <span id="sort-down" class="sort-arrow ms-1">&#9660;</span>
+                <span
+                  class="sort-arrows d-inline-flex flex-column position-absolute top-50 end-0 translate-middle-y me-2"
+                >
+                  <span id="sort-up" class="sort-arrow">&#9650;</span>
+                  <span id="sort-down" class="sort-arrow">&#9660;</span>
+                </span>
               </th>
               <th>Update</th>
               <th>Delete</th>
@@ -169,8 +174,28 @@
           };
         }
         let currentItems = [];
-        let currentSort = null;
+        let currentSort = null; // 'asc', 'desc', or null
         let currentFilter = "";
+        function updateSortArrows() {
+          const up = document.getElementById("sort-up");
+          const down = document.getElementById("sort-down");
+          if (currentSort === "asc") {
+            up.style.display = "block";
+            down.style.display = "none";
+            up.title = "Currently sorted A-Z. Click to sort Z-A.";
+            down.title = "";
+          } else if (currentSort === "desc") {
+            up.style.display = "none";
+            down.style.display = "block";
+            down.title = "Currently sorted Z-A. Click to sort A-Z.";
+            up.title = "";
+          } else {
+            up.style.display = "block";
+            down.style.display = "block";
+            up.title = "Sort A-Z";
+            down.title = "Sort Z-A";
+          }
+        }
         function renderTable(items) {
           currentItems = items;
           let filtered = items;
@@ -228,6 +253,7 @@
             tr.appendChild(deleteTd);
             tbody.appendChild(tr);
           });
+          updateSortArrows();
         }
         function fetchAndRender() {
           fetch("/pantry")
@@ -247,16 +273,27 @@
         document
           .getElementById("sort-up")
           .addEventListener("click", function () {
-            currentSort = "asc";
+            if (currentSort === "asc") {
+              currentSort = "desc";
+            } else {
+              currentSort = "asc";
+            }
             renderTable(currentItems);
+            updateSortArrows();
           });
         document
           .getElementById("sort-down")
           .addEventListener("click", function () {
-            currentSort = "desc";
+            if (currentSort === "desc") {
+              currentSort = "asc";
+            } else {
+              currentSort = "desc";
+            }
             renderTable(currentItems);
+            updateSortArrows();
           });
         fetchAndRender();
+        updateSortArrows();
       </script>
     </div>
   </body>
