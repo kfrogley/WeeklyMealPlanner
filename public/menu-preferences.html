@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Preferences Survey</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    form { max-width: 400px; margin: auto; }
+    label, select, input, textarea { display: block; width: 100%; margin-bottom: 15px; }
+    button { padding: 8px 16px; }
+  </style>
+</head>
+<body>
+<h1>Menu Preferences Survey</h1>
+<form>
+  <label for="age-group">Select Age Group:</label>
+  <select id="age-group" name="age-group" required>
+    <option value="">--Please choose an option--</option>
+    <option value="child">Child (0-12)</option>
+    <option value="teen">Teen (13-19)</option>
+    <option value="adult">Adult (20-64)</option>
+    <option value="senior">Senior (65+)</option>
+  </select>
+
+  <label for="menu-preference">Menu Preference:</label>
+  <input type="text" id="menu-preference" name="menu-preference" placeholder="e.g., Vegetarian, Vegan, Gluten-Free" required>
+
+  <label for="additional-notes">Additional Notes:</label>
+  <textarea id="additional-notes" name="additional-notes" rows="3" placeholder="Any allergies or special requests?"></textarea>
+
+  <button type="submit">Submit</button>
+</form>
+<script>
+  document.querySelector('form').addEventListener('submit', function(event) {
+    const ageGroup = document.getElementById('age-group').value;
+    const menuPreference = document.getElementById('menu-preference').value;
+
+    if (!ageGroup) {
+      alert('Please select an age group.');
+      event.preventDefault();
+    } else if (!menuPreference.trim()) {
+      alert('Please enter a menu preference.');
+      event.preventDefault();
+    }
+  });
+</script>
+</body>
+</html>
