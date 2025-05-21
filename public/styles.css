@@ -151,3 +151,24 @@ li {
   max-width: 500px;
   margin: 0 auto 1rem auto;
 }
+
+.recipe-card {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.recipe-card.recipe-hover:hover {
+  box-shadow: 0 4px 16px rgba(67, 179, 106, 0.15),
+    0 1.5px 6px rgba(0, 0, 0, 0.08);
+  border-color: #43b36a !important;
+  cursor: pointer;
+}
+.recipe-card .img-fluid {
+  max-width: 80px;
+  max-height: 80px;
+}
+.recipe-card .list-group-item {
+  background: transparent;
+  border: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.97em;
+}

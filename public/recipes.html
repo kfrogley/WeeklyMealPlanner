@@ -204,24 +204,37 @@
             } else {
               recipes.forEach((recipe) => {
                 const li = document.createElement("li");
+                li.className =
+                  "card mb-4 shadow-sm border-0 d-flex flex-row align-items-center recipe-card recipe-hover";
                 li.style.display = "flex";
                 li.style.alignItems = "flex-start";
                 li.style.gap = "15px";
                 li.style.flexDirection = "row";
                 li.style.cursor = "pointer";
+
+                // Image container for consistent width
+                const imgContainer = document.createElement("div");
+                imgContainer.className =
+                  "flex-shrink-0 d-flex align-items-center justify-content-center";
+                imgContainer.style.width = "90px";
+                imgContainer.style.height = "90px";
                 const img = document.createElement("img");
                 img.src = recipe.image;
                 img.alt = recipe.title;
-                img.width = 80;
-                img.height = 80;
-                img.style.objectFit = "cover";
-                img.style.borderRadius = "8px";
+                img.className = "img-fluid rounded";
+                img.style.maxWidth = "80px";
+                img.style.maxHeight = "80px";
+                imgContainer.appendChild(img);
+
                 const contentDiv = document.createElement("div");
+                contentDiv.className = "flex-grow-1";
                 const span = document.createElement("span");
                 span.textContent = recipe.title;
-                span.style.fontWeight = "bold";
+                span.className = "fw-bold mb-2 d-block fs-5";
                 // Ingredients list
                 const ingList = document.createElement("ul");
+                ingList.className =
+                  "list-group list-group-flush list-group-sm mb-0 ps-3 small";
                 ingList.style.margin = "8px 0 0 0";
                 ingList.style.paddingLeft = "18px";
                 if (
@@ -230,13 +243,15 @@
                 ) {
                   recipe.extendedIngredients.forEach((ing) => {
                     const ingLi = document.createElement("li");
+                    ingLi.className =
+                      "list-group-item py-1 px-2 border-0 bg-transparent";
                     ingLi.textContent = ing.original;
                     ingList.appendChild(ingLi);
                   });
                 }
                 contentDiv.appendChild(span);
                 contentDiv.appendChild(ingList);
-                li.appendChild(img);
+                li.appendChild(imgContainer);
                 li.appendChild(contentDiv);
                 // Open source URL in new tab on click
                 li.addEventListener("click", () => {
