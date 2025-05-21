@@ -111,25 +111,47 @@
         pantryItems.forEach((item, idx) => {
           const col = document.createElement("div");
           col.className = "col-12 col-md-6 col-lg-4";
-          const card = document.createElement("div");
-          card.className = "card h-100 flex-row align-items-center p-2";
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.className = "form-check-input me-2";
-          checkbox.checked = false;
-          checkbox.id = `pantry-item-${idx}`;
-          checkbox.addEventListener("change", function () {
-            if (this.checked) {
+          // Use <a> for accessibility and clickable area
+          const card = document.createElement("a");
+          card.href = "#";
+          card.className =
+            "card h-100 flex-row align-items-center p-2 pantry-card-selectable text-decoration-none";
+          card.tabIndex = 0;
+          card.setAttribute("role", "checkbox");
+          card.setAttribute("aria-checked", "false");
+          let selected = false;
+          function updateCardState() {
+            if (selected) {
+              card.classList.add("selected");
+              card.setAttribute("aria-checked", "true");
+              card.style.background = "#b6f5c6";
+              card.style.borderColor = "#43b36a";
+              card.style.color = "#256029";
               if (!selectedItems.includes(item)) selectedItems.push(item);
             } else {
+              card.classList.remove("selected");
+              card.setAttribute("aria-checked", "false");
+              card.style.background = "";
+              card.style.borderColor = "";
+              card.style.color = "";
               selectedItems = selectedItems.filter((i) => i !== item);
             }
+          }
+          card.addEventListener("click", function (e) {
+            e.preventDefault();
+            selected = !selected;
+            updateCardState();
           });
-          const label = document.createElement("label");
+          card.addEventListener("keydown", function (e) {
+            if (e.key === " " || e.key === "Enter") {
+              e.preventDefault();
+              selected = !selected;
+              updateCardState();
+            }
+          });
+          const label = document.createElement("span");
           label.className = "form-check-label mb-0";
-          label.setAttribute("for", `pantry-item-${idx}`);
           label.textContent = item;
-          card.appendChild(checkbox);
           card.appendChild(label);
           col.appendChild(card);
           pantryCards.appendChild(col);

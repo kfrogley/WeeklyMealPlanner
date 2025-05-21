@@ -112,3 +112,28 @@ li {
 .pantry-form {
   max-width: 500px;
 }
+
+.pantry-card-selectable.selected,
+.pantry-card-selectable.selected:focus,
+.pantry-card-selectable.selected:active {
+  background: #e6f9ec !important;
+  border-color: #4caf50 !important;
+  color: #256029 !important;
+}
+.pantry-card-selectable:focus {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
+}
+#pantry-cards .card.pantry-card-selectable.selected,
+#pantry-cards .card.pantry-card-selectable.selected:focus,
+#pantry-cards .card.pantry-card-selectable.selected:active,
+#pantry-cards a.card.pantry-card-selectable.selected {
+  background-color: #b6f5c6 !important;
+  border-color: #43b36a !important;
+  color: #256029 !important;
+  box-shadow: 0 0 0 2px #43b36a33;
+}
+#pantry-cards .card.pantry-card-selectable:focus {
+  outline: 2px solid #43b36a;
+  outline-offset: 2px;
+}
