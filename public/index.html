@@ -41,6 +41,16 @@
         </div>
       </div>
     </div>
+    <div id="delete-modal">
+      <div class="modal-content">
+        <h3>Delete Pantry Item</h3>
+        <p id="delete-modal-message"></p>
+        <div class="modal-actions">
+          <button id="delete-modal-cancel">Cancel</button>
+          <button id="delete-modal-confirm">Delete</button>
+        </div>
+      </div>
+    </div>
     <script>
       let modalItem = null;
       function showModal(currentValue, onSave) {
@@ -63,6 +73,31 @@
           cleanup();
         };
         document.getElementById("modal-cancel").onclick = function () {
+          cleanup();
+        };
+        // Close modal when clicking outside modal-content
+        modal.onclick = function (e) {
+          if (e.target === modal) {
+            cleanup();
+          }
+        };
+      }
+      function showDeleteModal(item, onDelete) {
+        const modal = document.getElementById("delete-modal");
+        const msg = document.getElementById("delete-modal-message");
+        msg.textContent = `Are you sure you want to delete '${item}'?`;
+        modal.classList.add("active");
+        function cleanup() {
+          modal.classList.remove("active");
+          document.getElementById("delete-modal-cancel").onclick = null;
+          document.getElementById("delete-modal-confirm").onclick = null;
+          modal.onclick = null;
+        }
+        document.getElementById("delete-modal-cancel").onclick = function () {
+          cleanup();
+        };
+        document.getElementById("delete-modal-confirm").onclick = function () {
+          onDelete();
           cleanup();
         };
         // Close modal when clicking outside modal-content
@@ -103,11 +138,11 @@
           const deleteBtn = document.createElement("button");
           deleteBtn.textContent = "Delete";
           deleteBtn.onclick = function () {
-            if (confirm(`Delete '${item}'?`)) {
+            showDeleteModal(item, function () {
               fetch(`/pantry/${encodeURIComponent(item)}`, { method: "DELETE" })
                 .then((res) => res.json())
                 .then((data) => renderTable(data));
-            }
+            });
           };
           deleteTd.appendChild(deleteBtn);
           tr.appendChild(deleteTd);
