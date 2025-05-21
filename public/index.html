@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pantry Items Input</title>
+    <link rel="stylesheet" href="modal.css" />
   </head>
   <body>
     <h1>Enter Pantry Item</h1>
@@ -19,7 +20,7 @@
       <button type="submit">Add Item</button>
     </form>
     <h2>Current Pantry Items</h2>
-    <table id="pantry-table" style="border-collapse: collapse">
+    <table id="pantry-table">
       <thead>
         <tr>
           <th>Name</th>
@@ -29,7 +30,48 @@
       </thead>
       <tbody></tbody>
     </table>
+    <div id="modal">
+      <div class="modal-content">
+        <h3>Update Pantry Item</h3>
+        <label for="modal-input">New Pantry Item Name:</label>
+        <input type="text" id="modal-input" placeholder="Enter new name" />
+        <div class="modal-actions">
+          <button id="modal-cancel">Cancel</button>
+          <button id="modal-save">Save</button>
+        </div>
+      </div>
+    </div>
     <script>
+      let modalItem = null;
+      function showModal(currentValue, onSave) {
+        const modal = document.getElementById("modal");
+        const input = document.getElementById("modal-input");
+        modal.classList.add("active");
+        input.value = currentValue;
+        input.focus();
+        function cleanup() {
+          modal.classList.remove("active");
+          document.getElementById("modal-save").onclick = null;
+          document.getElementById("modal-cancel").onclick = null;
+          modal.onclick = null;
+        }
+        document.getElementById("modal-save").onclick = function () {
+          const newName = input.value.trim();
+          if (newName && newName !== currentValue) {
+            onSave(newName);
+          }
+          cleanup();
+        };
+        document.getElementById("modal-cancel").onclick = function () {
+          cleanup();
+        };
+        // Close modal when clicking outside modal-content
+        modal.onclick = function (e) {
+          if (e.target === modal) {
+            cleanup();
+          }
+        };
+      }
       function renderTable(items) {
         const tbody = document.querySelector("#pantry-table tbody");
         tbody.innerHTML = "";
@@ -44,16 +86,15 @@
           const updateBtn = document.createElement("button");
           updateBtn.textContent = "Update";
           updateBtn.onclick = function () {
-            const newName = prompt("Update item name:", item);
-            if (newName && newName.trim() && newName !== item) {
+            showModal(item, function (newName) {
               fetch(`/pantry/${encodeURIComponent(item)}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ newName: newName.trim() }),
+                body: JSON.stringify({ newName }),
               })
                 .then((res) => res.json())
                 .then((data) => renderTable(data));
-            }
+            });
           };
           updateTd.appendChild(updateBtn);
           tr.appendChild(updateTd);
