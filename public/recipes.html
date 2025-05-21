@@ -2,55 +2,56 @@
 <html>
 <head>
   <title>Recipe Finder</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Find Recipes by Ingredients</h1>
-  <form id="ingredients-form">
-    <label for="ingredients">Enter ingredients (one per line):</label><br>
-    <textarea id="ingredients" rows="8" cols="40" required></textarea><br>
-    <button type="submit">Find Recipes</button>
-  </form>
-  <h2>Recipes</h2>
-  <ul id="recipes-list"></ul>
-  <script>
-    document.getElementById('ingredients-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const ingredients = document.getElementById('ingredients').value
-        .split('\n')
-        .map(i => i.trim())
-        .filter(i => i)
-        .join(',');
+<h1>Find Recipes by Ingredients</h1>
+<form id="ingredients-form">
+  <label for="ingredients">Enter ingredients (one per line):</label><br>
+  <textarea id="ingredients" rows="8" cols="40" required></textarea><br>
+  <button type="submit">Find Recipes</button>
+</form>
+<h2>Recipes</h2>
+<ul id="recipes-list"></ul>
+<script>
+  document.getElementById('ingredients-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const ingredients = document.getElementById('ingredients').value
+    .split('\n')
+    .map(i => i.trim())
+    .filter(i => i)
+    .join(',');
 
-      const apiKey = '4bc994b0e628489fbd3c07b336258324';
-      const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=5&apiKey=${apiKey}`;
+    const apiKey = '4bc994b0e628489fbd3c07b336258324';
+    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=5&apiKey=${apiKey}`;
 
-      const res = await fetch(url);
-      const recipes = await res.json();
+    const res = await fetch(url);
+    const recipes = await res.json();
 
-      const list = document.getElementById('recipes-list');
-      list.innerHTML = '';
-      recipes.forEach(recipe => {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.gap = '15px';
+    const list = document.getElementById('recipes-list');
+    list.innerHTML = '';
+    recipes.forEach(recipe => {
+      const li = document.createElement('li');
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.gap = '15px';
 
-        const img = document.createElement('img');
-        img.src = recipe.image;
-        img.alt = recipe.title;
-        img.width = 80;
-        img.height = 80;
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '8px';
+      const img = document.createElement('img');
+      img.src = recipe.image;
+      img.alt = recipe.title;
+      img.width = 80;
+      img.height = 80;
+      img.style.objectFit = 'cover';
+      img.style.borderRadius = '8px';
 
-        const span = document.createElement('span');
-        span.textContent = recipe.title;
+      const span = document.createElement('span');
+      span.textContent = recipe.title;
 
-        li.appendChild(img);
-        li.appendChild(span);
-        list.appendChild(li);
-      });
+      li.appendChild(img);
+      li.appendChild(span);
+      list.appendChild(li);
     });
-  </script>
+  });
+</script>
 </body>
 </html>
