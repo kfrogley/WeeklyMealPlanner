@@ -72,3 +72,33 @@ li {
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
+.select-group {
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  max-width: 350px;
+}
+.select-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+  color: #333;
+}
+.select-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 1rem;
+  margin-top: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.select-group select:focus {
+  border-color: #2563eb;
+  outline: none;
+}
