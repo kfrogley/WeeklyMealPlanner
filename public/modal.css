@@ -1,0 +1,30 @@
+/* Modal styles for pantry item update and delete */
+#modal, #delete-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#modal.active, #delete-modal.active {
+  display: flex;
+}
+#modal .modal-content, #delete-modal .modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+  max-width: 90vw;
+}
+#modal-input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+#modal .modal-actions, #delete-modal .modal-actions {
+  text-align: right;
+}
