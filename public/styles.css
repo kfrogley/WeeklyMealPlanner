@@ -137,3 +137,17 @@ li {
   outline: 2px solid #43b36a;
   outline-offset: 2px;
 }
+
+#recipes-loading {
+  display: none;
+  max-width: 500px;
+  margin: 0 auto 1rem auto;
+}
+#recipes-loading .progress-bar {
+  width: 100%;
+}
+#no-recipes-message {
+  display: none;
+  max-width: 500px;
+  margin: 0 auto 1rem auto;
+}
