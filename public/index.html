@@ -1,28 +1,84 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Pantry Items Input</title>
-</head>
-<body>
-  <h1>Enter Pantry Item</h1>
-  <form action="/pantry" method="POST">
-    <input type="text" name="item" required>
-    <button type="submit">Add Item</button>
-  </form>
-  <h2>Current Pantry Items</h2>
-  <ul id="pantry-list"></ul>
-  <script>
-    fetch('/pantry')
-      .then(res => res.json())
-      .then(items => {
-        const list = document.getElementById('pantry-list');
-        list.innerHTML = '';
-        items.forEach(item => {
-          const li = document.createElement('li');
-          li.textContent = item;
-          list.appendChild(li);
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantry Items Input</title>
+  </head>
+  <body>
+    <h1>Enter Pantry Item</h1>
+    <form action="/pantry" method="POST">
+      <label for="item-input">Pantry Item:</label>
+      <input
+        type="text"
+        id="item-input"
+        name="item"
+        required
+        placeholder="e.g. Rice"
+      />
+      <button type="submit">Add Item</button>
+    </form>
+    <h2>Current Pantry Items</h2>
+    <table id="pantry-table" style="border-collapse: collapse">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Update</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script>
+      function renderTable(items) {
+        const tbody = document.querySelector("#pantry-table tbody");
+        tbody.innerHTML = "";
+        items.forEach((item, idx) => {
+          const tr = document.createElement("tr");
+          // Name cell
+          const nameTd = document.createElement("td");
+          nameTd.textContent = item;
+          tr.appendChild(nameTd);
+          // Update button
+          const updateTd = document.createElement("td");
+          const updateBtn = document.createElement("button");
+          updateBtn.textContent = "Update";
+          updateBtn.onclick = function () {
+            const newName = prompt("Update item name:", item);
+            if (newName && newName.trim() && newName !== item) {
+              fetch(`/pantry/${encodeURIComponent(item)}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ newName: newName.trim() }),
+              })
+                .then((res) => res.json())
+                .then((data) => renderTable(data));
+            }
+          };
+          updateTd.appendChild(updateBtn);
+          tr.appendChild(updateTd);
+          // Delete button
+          const deleteTd = document.createElement("td");
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.onclick = function () {
+            if (confirm(`Delete '${item}'?`)) {
+              fetch(`/pantry/${encodeURIComponent(item)}`, { method: "DELETE" })
+                .then((res) => res.json())
+                .then((data) => renderTable(data));
+            }
+          };
+          deleteTd.appendChild(deleteBtn);
+          tr.appendChild(deleteTd);
+          tbody.appendChild(tr);
         });
-      });
-  </script>
-</body>
+      }
+      function fetchAndRender() {
+        fetch("/pantry")
+          .then((res) => res.json())
+          .then(renderTable);
+      }
+      fetchAndRender();
+    </script>
+  </body>
 </html>
