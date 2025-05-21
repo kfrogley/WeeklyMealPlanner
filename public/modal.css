@@ -60,3 +60,10 @@
 .input-group {
   max-width: 250px;
 }
+.search-box-width {
+  max-width: 250px;
+}
+
+.pantry-actions-width {
+  width: 180px;
+}
