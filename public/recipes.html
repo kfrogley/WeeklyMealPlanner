@@ -1,171 +1,210 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Recipe Finder</title>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-  />
-  <link rel="stylesheet" href="modal.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-  />
-  <link rel="icon" type="image/png" href="img/FavIcon.png" />
-</head>
-<body class="bg-light">
-<!-- Bootstrap Navbar (copied from index.html) -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 rounded">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.html">
-      <img
-        src="img/FavIcon.png"
-        alt="Meal Planner"
-        width="32"
-        height="32"
-        class="d-inline-block align-text-top me-2"
-      />
-      Weekly Meal Planner
-    </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
+  <head>
+    <title>Recipe Finder</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="modal.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="icon" type="image/png" href="img/FavIcon.png" />
+  </head>
+  <body class="bg-light">
+    <!-- Bootstrap Navbar (copied from index.html) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 rounded">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="index.html">
+          <img
+            src="img/FavIcon.png"
+            alt="Meal Planner"
+            width="32"
+            height="32"
+            class="d-inline-block align-text-top me-2"
+          />
+          Weekly Meal Planner
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Pantry</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="recipes.html">Recipes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="menu-preferences.html"
+                >Menu Preferences</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+
+    <h1>Find Recipes by Pantry Items</h1>
+    <div
+      id="pantry-list-container"
+      class="card p-3 mx-auto mb-3 pantry-list-container"
     >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">Pantry</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="recipes.html">Recipes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="menu-preferences.html"
-          >Menu Preferences</a
-          >
-        </li>
-      </ul>
+      <h5>Your Pantry Items:</h5>
+      <div id="pantry-cards" class="row g-2"></div>
     </div>
-  </div>
-</nav>
-<!-- End Navbar -->
+    <form
+      id="ingredients-form"
+      class="card p-4 mx-auto mb-4 shadow-sm pantry-form"
+    >
+      <div class="mb-3">
+        <label for="menu-preference" class="form-label">Menu Preference:</label>
+        <select id="menu-preference" name="menu-preference" class="form-select">
+          <option value="">--Please choose an option--</option>
+          <!-- options will be populated here -->
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="intolerances" class="form-label">Intolerances:</label>
+        <select id="intolerances" name="intolerances" class="form-select">
+          <option value="">--None--</option>
+          <option value="peanut">Peanuts</option>
+          <option value="dairy">Dairy</option>
+          <option value="gluten">Gluten</option>
+          <option value="egg">Egg</option>
+          <option value="soy">Soy</option>
+          <option value="seafood">Seafood</option>
+          <option value="sesame">Sesame</option>
+          <option value="tree nut">Tree Nuts</option>
+          <option value="wheat">Wheat</option>
+          <option value="shellfish">Shellfish</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Find Recipes</button>
+    </form>
+    <h2>Recipes</h2>
+    <ul id="recipes-list"></ul>
 
-<h1>Find Recipes by Ingredients</h1>
-<form id="ingredients-form" class="card p-4 mx-auto mb-4 shadow-sm" style="max-width: 500px;">
-  <div class="mb-3">
-    <label for="ingredients" class="form-label">Enter ingredients (one per line):</label>
-    <textarea id="ingredients" rows="8" class="form-control" required></textarea>
-  </div>
-  <div class="mb-3">
-    <label for="menu-preference" class="form-label">Menu Preference:</label>
-    <select id="menu-preference" name="menu-preference" class="form-select">
-      <option value="">--Please choose an option--</option>
-      <!-- options will be populated here -->
-    </select>
-  </div>
-  <div class="mb-3">
-    <label for="intolerances" class="form-label">Intolerances:</label>
-    <select id="intolerances" name="intolerances" class="form-select">
-      <option value="">--None--</option>
-      <option value="peanut">Peanuts</option>
-      <option value="dairy">Dairy</option>
-      <option value="gluten">Gluten</option>
-      <option value="egg">Egg</option>
-      <option value="soy">Soy</option>
-      <option value="seafood">Seafood</option>
-      <option value="sesame">Sesame</option>
-      <option value="tree nut">Tree Nuts</option>
-      <option value="wheat">Wheat</option>
-      <option value="shellfish">Shellfish</option>
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary w-100">Find Recipes</button>
-</form>
-<h2>Recipes</h2>
-<ul id="recipes-list"></ul>
-
-<script>
-  document.getElementById('ingredients-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const ingredients = document.getElementById('ingredients').value
-    .split('\n')
-    .map(i => i.trim())
-    .filter(i => i)
-    .join(',');
-
-    const cuisine = document.getElementById('menu-preference').value;
-    const intolerances = document.getElementById('intolerances').value;
-
-
-    const apiKey = '4bc994b0e628489fbd3c07b336258324';
-    const url = `https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${encodeURIComponent(ingredients)}&number=5&apiKey=${apiKey}` +
-    // (cuisine ? `&cuisine=${encodeURIComponent(cuisine)}` : '') +
-    (intolerances ? `&intolerances=${encodeURIComponent(intolerances)}` : '');
-
-    const res = await fetch(url);
-    const data = await res.json();
-    const recipes = data.results;
-
-    const list = document.getElementById('recipes-list');
-    list.innerHTML = '';
-    recipes.forEach(recipe => {
-      const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.alignItems = 'flex-start';
-      li.style.gap = '15px';
-      li.style.flexDirection = 'row';
-      li.style.cursor = 'pointer';
-
-      const img = document.createElement('img');
-      img.src = recipe.image;
-      img.alt = recipe.title;
-      img.width = 80;
-      img.height = 80;
-      img.style.objectFit = 'cover';
-      img.style.borderRadius = '8px';
-
-      const contentDiv = document.createElement('div');
-      const span = document.createElement('span');
-      span.textContent = recipe.title;
-      span.style.fontWeight = 'bold';
-
-      // Ingredients list
-      const ingList = document.createElement('ul');
-      ingList.style.margin = '8px 0 0 0';
-      ingList.style.paddingLeft = '18px';
-      if (recipe.extendedIngredients && recipe.extendedIngredients.length > 0) {
-        recipe.extendedIngredients.forEach(ing => {
-          const ingLi = document.createElement('li');
-          ingLi.textContent = ing.original;
-          ingList.appendChild(ingLi);
+    <script>
+      // Fetch pantry items from the backend like index.html
+      let pantryItems = [];
+      let selectedItems = [];
+      async function loadPantryItems() {
+        const res = await fetch("/pantry");
+        const items = await res.json();
+        pantryItems = items;
+        selectedItems = []; // default: none selected
+        const pantryCards = document.getElementById("pantry-cards");
+        pantryCards.innerHTML = "";
+        pantryItems.forEach((item, idx) => {
+          const col = document.createElement("div");
+          col.className = "col-12 col-md-6 col-lg-4";
+          const card = document.createElement("div");
+          card.className = "card h-100 flex-row align-items-center p-2";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.className = "form-check-input me-2";
+          checkbox.checked = false;
+          checkbox.id = `pantry-item-${idx}`;
+          checkbox.addEventListener("change", function () {
+            if (this.checked) {
+              if (!selectedItems.includes(item)) selectedItems.push(item);
+            } else {
+              selectedItems = selectedItems.filter((i) => i !== item);
+            }
+          });
+          const label = document.createElement("label");
+          label.className = "form-check-label mb-0";
+          label.setAttribute("for", `pantry-item-${idx}`);
+          label.textContent = item;
+          card.appendChild(checkbox);
+          card.appendChild(label);
+          col.appendChild(card);
+          pantryCards.appendChild(col);
         });
       }
+      loadPantryItems();
 
-      contentDiv.appendChild(span);
-      contentDiv.appendChild(ingList);
-
-      li.appendChild(img);
-      li.appendChild(contentDiv);
-
-      // Open source URL in new tab on click
-      li.addEventListener('click', () => {
-        if (recipe.spoonacularSourceUrl) {
-          window.open(recipe.spoonacularSourceUrl, '_blank');
-        }
-      });
-
-      list.appendChild(li);
-    });
-  });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
-</body>
+      document
+        .getElementById("ingredients-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          // Use only selectedItems as ingredients
+          const ingredients = selectedItems.join(",");
+          const cuisine = document.getElementById("menu-preference").value;
+          const intolerances = document.getElementById("intolerances").value;
+          const apiKey = "4bc994b0e628489fbd3c07b336258324";
+          const url =
+            `https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${encodeURIComponent(
+              ingredients
+            )}&number=5&apiKey=${apiKey}` +
+            (intolerances
+              ? `&intolerances=${encodeURIComponent(intolerances)}`
+              : "");
+          const res = await fetch(url);
+          const data = await res.json();
+          const recipes = data.results;
+          const list = document.getElementById("recipes-list");
+          list.innerHTML = "";
+          recipes.forEach((recipe) => {
+            const li = document.createElement("li");
+            li.style.display = "flex";
+            li.style.alignItems = "flex-start";
+            li.style.gap = "15px";
+            li.style.flexDirection = "row";
+            li.style.cursor = "pointer";
+            const img = document.createElement("img");
+            img.src = recipe.image;
+            img.alt = recipe.title;
+            img.width = 80;
+            img.height = 80;
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "8px";
+            const contentDiv = document.createElement("div");
+            const span = document.createElement("span");
+            span.textContent = recipe.title;
+            span.style.fontWeight = "bold";
+            // Ingredients list
+            const ingList = document.createElement("ul");
+            ingList.style.margin = "8px 0 0 0";
+            ingList.style.paddingLeft = "18px";
+            if (
+              recipe.extendedIngredients &&
+              recipe.extendedIngredients.length > 0
+            ) {
+              recipe.extendedIngredients.forEach((ing) => {
+                const ingLi = document.createElement("li");
+                ingLi.textContent = ing.original;
+                ingList.appendChild(ingLi);
+              });
+            }
+            contentDiv.appendChild(span);
+            contentDiv.appendChild(ingList);
+            li.appendChild(img);
+            li.appendChild(contentDiv);
+            // Open source URL in new tab on click
+            li.addEventListener("click", () => {
+              if (recipe.spoonacularSourceUrl) {
+                window.open(recipe.spoonacularSourceUrl, "_blank");
+              }
+            });
+            list.appendChild(li);
+          });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+  </body>
 </html>
