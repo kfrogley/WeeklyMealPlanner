@@ -41,7 +41,7 @@ button {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -101,4 +101,74 @@ li {
 .select-group select:focus {
   border-color: #2563eb;
   outline: none;
+}
+
+.pantry-list-container {
+  max-width: 500px;
+}
+.pantry-list {
+  margin-bottom: 0;
+}
+.pantry-form {
+  max-width: 500px;
+}
+
+.pantry-card-selectable.selected,
+.pantry-card-selectable.selected:focus,
+.pantry-card-selectable.selected:active {
+  background: #e6f9ec !important;
+  border-color: #4caf50 !important;
+  color: #256029 !important;
+}
+.pantry-card-selectable:focus {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
+}
+#pantry-cards .card.pantry-card-selectable.selected,
+#pantry-cards .card.pantry-card-selectable.selected:focus,
+#pantry-cards .card.pantry-card-selectable.selected:active,
+#pantry-cards a.card.pantry-card-selectable.selected {
+  background-color: #b6f5c6 !important;
+  border-color: #43b36a !important;
+  color: #256029 !important;
+  box-shadow: 0 0 0 2px #43b36a33;
+}
+#pantry-cards .card.pantry-card-selectable:focus {
+  outline: 2px solid #43b36a;
+  outline-offset: 2px;
+}
+
+#recipes-loading {
+  display: none;
+  max-width: 500px;
+  margin: 0 auto 1rem auto;
+}
+#recipes-loading .progress-bar {
+  width: 100%;
+}
+#no-recipes-message {
+  display: none;
+  max-width: 500px;
+  margin: 0 auto 1rem auto;
+}
+
+.recipe-card {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.recipe-card.recipe-hover:hover {
+  box-shadow: 0 4px 16px rgba(67, 179, 106, 0.15),
+    0 1.5px 6px rgba(0, 0, 0, 0.08);
+  border-color: #43b36a !important;
+  cursor: pointer;
+}
+.recipe-card .img-fluid {
+  max-width: 80px;
+  max-height: 80px;
+}
+.recipe-card .list-group-item {
+  background: transparent;
+  border: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.97em;
 }
